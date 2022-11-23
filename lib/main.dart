@@ -47,6 +47,8 @@ class _MyHomePageState extends State<MyHomePage> {
     for (int i = 0; i < articleJson.length; i++) {
       articles.add(Article.fromJson(articleJson[i]));
     }
+    setState(() {
+    });
   }
 
   @override
@@ -81,11 +83,12 @@ class _MyHomePageState extends State<MyHomePage> {
                     color: Color(0xFF041A3C))),
             Expanded(
               child: ListView.builder(
-                  itemCount: articles.length,
+                  itemCount: 10,
                   itemBuilder: (context, index) => CardArticle(
                         title: articles[index].title ?? "",
                         description: articles[index].description ?? "",
                         date: articles[index].publishedAt ?? "",
+                        imageURL: articles[index].urlToImage ?? "",
                       )),
             ),
           ],
