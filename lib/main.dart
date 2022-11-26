@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
+import 'services/newapi_service.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -33,28 +35,16 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final Uri endpointURL = Uri.parse(
-      "https://newsapi.org/v2/everything?q=apple&from=2022-11-22&to=2022-11-22&sortBy=popularity");
-  final List<Article> articles = [];
-
-  void fetchArticle() async {
-    Response response = await http.get(endpointURL,
-        headers: {"X-Api-Key": "208d436b4640455c9c6546cbc9965aad"});
-
-    var dataJson = jsonDecode(response.body);
-    List articleJson = dataJson["articles"] as List;
-
-    for (int i = 0; i < articleJson.length; i++) {
-      articles.add(Article.fromJson(articleJson[i]));
-    }
-    setState(() {
-    });
-  }
-
+  List<Article> articles = [];
+  final NewsApiService apiService = NewsApiService();
   @override
   void initState() {
     super.initState();
-    fetchArticle();
+    apiService.fetchArticle().then((newArticleValue) {
+      setState(() {
+        articles = newArticleValue;
+      });
+    });
   }
 
   @override
@@ -83,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     color: Color(0xFF041A3C))),
             Expanded(
               child: ListView.builder(
-                  itemCount: 10,
+                  itemCount: articles.length,
                   itemBuilder: (context, index) => CardArticle(
                         title: articles[index].title ?? "",
                         description: articles[index].description ?? "",
