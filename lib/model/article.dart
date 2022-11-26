@@ -1,49 +1,120 @@
-import 'package:daily/model/source.dart';
-
 class Article {
-  Source? source;
-  String? author;
-  String? title;
-  String? description;
-  String? url;
-  String? urlToImage;
-  String? publishedAt;
-  String? content;
+  Source? _source;
+  String? _author;
+  String? _title;
+  String? _description;
+  String? _url;
+  String? _urlToImage;
+  String? _publishedAt;
+  String? _content;
 
   Article(
-      {this.source,
-      this.author,
-      this.title,
-      this.description,
-      this.url,
-      this.urlToImage,
-      this.publishedAt,
-      this.content});
+      {Source? source,
+      String? author,
+      String? title,
+      String? description,
+      String? url,
+      String? urlToImage,
+      String? publishedAt,
+      String? content}) {
+    if (source != null) {
+      this._source = source;
+    }
+    if (author != null) {
+      this._author = author;
+    }
+    if (title != null) {
+      this._title = title;
+    }
+    if (description != null) {
+      this._description = description;
+    }
+    if (url != null) {
+      this._url = url;
+    }
+    if (urlToImage != null) {
+      this._urlToImage = urlToImage;
+    }
+    if (publishedAt != null) {
+      this._publishedAt = publishedAt;
+    }
+    if (content != null) {
+      this._content = content;
+    }
+  }
+
+  Source? get source => _source;
+  set source(Source? source) => _source = source;
+  String? get author => _author;
+  set author(String? author) => _author = author;
+  String? get title => _title;
+  set title(String? title) => _title = title;
+  String? get description => _description;
+  set description(String? description) => _description = description;
+  String? get url => _url;
+  set url(String? url) => _url = url;
+  String? get urlToImage => _urlToImage;
+  set urlToImage(String? urlToImage) => _urlToImage = urlToImage;
+  String? get publishedAt => _publishedAt;
+  set publishedAt(String? publishedAt) => _publishedAt = publishedAt;
+  String? get content => _content;
+  set content(String? content) => _content = content;
 
   Article.fromJson(Map<String, dynamic> json) {
-    source =
-        json['source'] != null ? Source.fromJson(json['source']) : null;
-    author = json['author'];
-    title = json['title'];
-    description = json['description'];
-    url = json['url'];
-    urlToImage = json['urlToImage'];
-    publishedAt = json['publishedAt'];
-    content = json['content'];
+    _source =
+        json['source'] != null ? new Source.fromJson(json['source']) : null;
+    _author = json['author'];
+    _title = json['title'];
+    _description = json['description'];
+    _url = json['url'];
+    _urlToImage = json['urlToImage'];
+    _publishedAt = json['publishedAt'];
+    _content = json['content'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    if (source != null) {
-      data['source'] = source!.toJson();
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this._source != null) {
+      data['source'] = this._source!.toJson();
     }
-    data['author'] = author;
-    data['title'] = title;
-    data['description'] = description;
-    data['url'] = url;
-    data['urlToImage'] = urlToImage;
-    data['publishedAt'] = publishedAt;
-    data['content'] = content;
+    data['author'] = this._author;
+    data['title'] = this._title;
+    data['description'] = this._description;
+    data['url'] = this._url;
+    data['urlToImage'] = this._urlToImage;
+    data['publishedAt'] = this._publishedAt;
+    data['content'] = this._content;
+    return data;
+  }
+}
+
+class Source {
+  String? _id;
+  String? _name;
+
+  Source({String? id, String? name}) {
+    if (id != null) {
+      this._id = id;
+    }
+    if (name != null) {
+      this._name = name;
+    }
+  }
+
+  String? get id => _id;
+  set id(String? id) => _id = id;
+  String? get name => _name;
+  set name(String? name) => _name = name;
+
+  Source.fromJson(Map<String, dynamic> json) {
+    _id = json['id'];
+    _name = json['name'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this._id;
+    data['name'] = this._name;
     return data;
   }
 }
