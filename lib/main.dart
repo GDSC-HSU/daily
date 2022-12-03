@@ -12,7 +12,7 @@ import 'services/newapi_service.dart';
 
 void main() {
   runApp(BlocProvider(
-    create: (context) => NewArticleBloc(),
+    create: (context) => NewArticleBloc(apiService: NewsApiService()),
     child: MyApp(),
   ));
 }
@@ -40,17 +40,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<Article> articles = [];
   final NewsApiService apiService = NewsApiService();
   @override
   void initState() {
     super.initState();
-    // kéo dữ liệu từ API
-    // apiService.fetchArticle().then((newArticleValue) {
-    //   setState(() {
-    //     articles = newArticleValue;
-    //   });
-    // });
+
     BlocProvider.of<NewArticleBloc>(context).add(NewArticleLoadEvent());
   }
 
@@ -78,27 +72,74 @@ class _MyHomePageState extends State<MyHomePage> {
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF041A3C))),
-            BlocBuilder<NewArticleBloc, NewArticleState>(
-              builder: (context, state) {
-                if (state is NewArticleLoading) {
-                  return CircularProgressIndicator();
+            BlocConsumer<NewArticleBloc, NewArticleState>(
+              listener: (context, state) {
+                if (state is NewArticleLoadFailure) {
+                  _showMyDialog();
                 }
-
-                return Expanded(
-                  child: ListView.builder(
-                      itemCount: articles.length,
-                      itemBuilder: (context, index) => CardArticle(
-                            title: articles[index].title ?? "",
-                            description: articles[index].description ?? "",
-                            date: articles[index].publishedAt ?? "",
-                            imageURL: articles[index].urlToImage ?? "",
-                          )),
-                );
+              },
+              builder: (context, state) {
+                if (state is NewArticleLoadSusessfully) {
+                  final articles = state.articles;
+                  return Expanded(
+                    child: RefreshIndicator(
+                      onRefresh: () async {
+                        BlocProvider.of<NewArticleBloc>(context)
+                            .add(NewArticleLoadEvent());
+                      },
+                      child: ListView.builder(
+                          itemCount: articles.length,
+                          itemBuilder: (context, index) => CardArticle(
+                                title: articles[index].title ?? "",
+                                description: articles[index].description ?? "",
+                                date: articles[index].publishedAt ?? "",
+                                imageURL: articles[index].urlToImage ?? "",
+                              )),
+                    ),
+                  );
+                }
+                return const Expanded(
+                    child: Center(child: CircularProgressIndicator()));
               },
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Fail to load news'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text('Would you like reload?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                BlocProvider.of<NewArticleBloc>(context)
+                    .add(NewArticleLoadEvent());
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
