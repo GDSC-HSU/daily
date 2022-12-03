@@ -1,15 +1,20 @@
 import 'dart:convert';
 
+import 'package:daily/blocs/bloc/new_article_bloc.dart';
 import 'package:daily/model/article.dart';
 import 'package:daily/widgets/card_article.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
 import 'services/newapi_service.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(BlocProvider(
+    create: (context) => NewArticleBloc(),
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -40,11 +45,13 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    apiService.fetchArticle().then((newArticleValue) {
-      setState(() {
-        articles = newArticleValue;
-      });
-    });
+    // kéo dữ liệu từ API
+    // apiService.fetchArticle().then((newArticleValue) {
+    //   setState(() {
+    //     articles = newArticleValue;
+    //   });
+    // });
+    BlocProvider.of<NewArticleBloc>(context).add(NewArticleLoadEvent());
   }
 
   @override
@@ -71,15 +78,23 @@ class _MyHomePageState extends State<MyHomePage> {
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF041A3C))),
-            Expanded(
-              child: ListView.builder(
-                  itemCount: articles.length,
-                  itemBuilder: (context, index) => CardArticle(
-                        title: articles[index].title ?? "",
-                        description: articles[index].description ?? "",
-                        date: articles[index].publishedAt ?? "",
-                        imageURL: articles[index].urlToImage ?? "",
-                      )),
+            BlocBuilder<NewArticleBloc, NewArticleState>(
+              builder: (context, state) {
+                if (state is NewArticleLoading) {
+                  return CircularProgressIndicator();
+                }
+
+                return Expanded(
+                  child: ListView.builder(
+                      itemCount: articles.length,
+                      itemBuilder: (context, index) => CardArticle(
+                            title: articles[index].title ?? "",
+                            description: articles[index].description ?? "",
+                            date: articles[index].publishedAt ?? "",
+                            imageURL: articles[index].urlToImage ?? "",
+                          )),
+                );
+              },
             ),
           ],
         ),
