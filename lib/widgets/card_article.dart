@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'article_bookmark.dart';
+
 class CardArticle extends StatelessWidget {
   final String title;
   final String description;
@@ -55,10 +57,7 @@ class CardArticle extends StatelessWidget {
                     style: const TextStyle(
                         fontSize: 10, fontWeight: FontWeight.bold),
                   ),
-                  const Icon(
-                    Icons.bookmark,
-                    size: 12,
-                  )
+                  ArticleBookMark()
                 ],
               )
             ],
