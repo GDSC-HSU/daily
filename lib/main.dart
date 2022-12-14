@@ -2,14 +2,14 @@ import 'package:daily/blocs/bloc/new_article_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'config/route/app_route.dart';
+import 'config/routes/app_route.dart';
 import 'pages/home_page.dart';
 import 'services/newapi_service.dart';
 
 void main() {
   runApp(BlocProvider(
     create: (context) => NewArticleBloc(apiService: NewsApiService()),
-    child: MyApp(),
+    child: const MyApp(),
   ));
 }
 

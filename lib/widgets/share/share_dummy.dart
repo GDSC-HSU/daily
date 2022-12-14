@@ -1,0 +1,1 @@
+// widget này nằm trong folder share dùng chung giữa các page

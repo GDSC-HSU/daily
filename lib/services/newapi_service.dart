@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
 
-import '../config/env/enpoint.dart';
+import '../config/env/endpoint.dart';
 import '../model/article.dart';
 
 class NewsApiService {
